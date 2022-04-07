@@ -1,0 +1,23 @@
+{
+  "name": "pt3101-exercise-api-without-db",
+  "version": "1.0.0",
+  "description": "Simple api without db",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "create": "node scripts/create.js",
+    "db": "cat original/users_original.json > db/users.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ngneat/falso": "^4.0.0",
+    "express": "^4.17.3",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
