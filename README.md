@@ -3,10 +3,10 @@
 ### Antes de comenzar...
 
 - Instalación de paquetes (`npm i`)
-- Copia la información del fichero que actúa como persistente de la información (`npm run init`)
+- Copia la información del fichero que actúa como persistente de la información (`npm run db`)
 - Ejecuta el script de desarrollo!
 
-* Si quisieras datos aleatorios y completamente nuevos para usar, ejecuta el script `npm run create`. Si quieres volver a la información original, `npm run init`
+* Si quisieras datos aleatorios y completamente nuevos para usar, ejecuta el script `npm run create`. Si quieres volver a la información original, `npm run db`
 
 ### Endpoints!
 
