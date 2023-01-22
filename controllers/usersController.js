@@ -1,12 +1,10 @@
 const fs = require('fs');
-const usersPath = '../db/users.json';
+const usersPath = './db/users.json';
 const { v4: uuidv4 } = require('uuid');
 
-const users = () => {
-    const usersJSON = fs.readFileSync(usersPath, 'utf8');
-    const users = JSON.parse(usersJSON);
-    return users;
-}
+const usersJSON = fs.readFileSync(usersPath, 'utf8');
+const users = JSON.parse(usersJSON);
+
 
 const getUsers = (req, res) => {
     res.status(200).json(users);
@@ -14,20 +12,20 @@ const getUsers = (req, res) => {
 
 const getUser = (req, res) => {
     for (let user of users) {
-        if (user.username === req.params) {
+        if (user.username === req.params.username) {
             res.status(200).json(user);
         }
     }
 };
 
 const totalUsers = (req, res) => {
-    res.status(200).send(`There are ${users.length} total users`);
+    res.status(200).json({ total: users.length });
 }
 
 const usersFrom = (req, res) => {
     let arr = [];
     for (let user of users) {
-        if (user.country === req.params) {
+        if (user.address.country === req.params.country) {
             arr.push(user);
         }
     }
@@ -47,7 +45,7 @@ const numberOfVehicles = (req, res) => {
 const favoriteFoodIs = (req, res) => {
     let arr = [];
     for (let user of users) {
-        if (user.favouritesFood.includes(req.params)) {
+        if (user.favouritesFood.includes(req.params.food)) {
             arr.push(user);
         }
     }
@@ -131,15 +129,15 @@ const hasVehicleWith = (req, res) => {
 }
 
 const createUser = (req, res) => {
-    const { email, firstname, lastname, username, ...rest } = req.body;
-    if (!email || !firstname || !lastname || !username) {
-        res.status(400).json({ message: 'Missing required fields' });
+    const { email, firstName, lastName, username, ...rest } = req.body;
+    if (!email || !firstName || !lastName || !username) {
+        return res.status(400).json({ message: 'Missing required fields' });
     }
     const user = {
         id: uuidv4(),
         email,
-        firstname,
-        lastname,
+        firstName,
+        lastName,
         username,
         ...rest,
     };
@@ -148,14 +146,10 @@ const createUser = (req, res) => {
 
 const updateUser = (req, res) => {
     for (let user of users) {
-        if (user.username === req.params) {
+        if (user.username === req.params.username) {
             let { id, vehicles, favouritesFood, deleted, ...data } = req.body;
-            let keys = data.keys();
-            let values = data.values();
-            for (let i = 0; i < data.length; i++) {
-                let key = keys[i];
-                let value = values[i];
-                user[key] = value;
+            for (let key of Object.keys(data)) {
+                user[key] = data[key];
             }
             console.log(user)
             break;
@@ -166,10 +160,10 @@ const updateUser = (req, res) => {
 }
 
 const addVehicles = (req, res) => {
-    if (req.body.length > 0) {
+    if (Object.keys(req.body).length > 0) {
         for (let user of users) {
-            if (user.username === req.params) {
-                user.vehicles += req.body;
+            if (user.username === req.params.username) {
+                user.vehicles = [...user.vehicles, ...req.body.vehicles];
                 break;
             }
         }
@@ -179,41 +173,48 @@ const addVehicles = (req, res) => {
 }
 
 const addFoods = (req, res) => {
-    if (req.body.length > 0) {
+    if (Object.keys(req.body).length > 0) {
         for (let user of users) {
-            if (user.username === req.params) {
-                user.favouritesFood += req.body;
+            if (user.username === req.params.username) {
+                user.favouritesFood = [...user.favouritesFood, ...req.body.favouritesFood];
                 break;
             }
         }
     } else {
-        delete user.favouritesFood;
-    }
-}
-
-const hideUser = (req, res) => {
-    for (let user of users) {
-        if (user.email === req.body) {
-            user.deleted = true;
-            break;
+        for (let user of users) {
+            if (user.username === req.params.username) {
+                user.favouritesFood = [];
+                break;
+            }
         }
     }
     fs.writeFileSync(usersPath, JSON.stringify(users));
-    res.status(200).send("The user has been deleted");
+    res.status(200).send("El usuario se ha actualizado correctamente")
 }
 
-module.exports = {
-    getUsers,
-    getUser,
-    totalUsers,
-    usersFrom,
-    numberOfVehicles,
-    favoriteFoodIs,
-    hasVehicleWith,
-    createUser,
-    updateUser,
-    addVehicles,
-    addFoods,
-    hideUser
-}
+    const hideUser = (req, res) => {
+        for (let user of users) {
+            if (user.email === req.body.email) {
+                user.deleted = true;
+                break;
+            }
+        }
+        fs.writeFileSync(usersPath, JSON.stringify(users));
+        res.status(200).send("The user has been deleted");
+    }
+
+    module.exports = {
+        getUsers,
+        getUser,
+        totalUsers,
+        usersFrom,
+        numberOfVehicles,
+        favoriteFoodIs,
+        hasVehicleWith,
+        createUser,
+        updateUser,
+        addVehicles,
+        addFoods,
+        hideUser
+    }
 

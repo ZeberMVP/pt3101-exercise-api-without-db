@@ -1,11 +1,8 @@
 const fs = require('fs');
-const usersPath = '../db/users.json';
+const usersPath = './db/users.json';
 
-const users = () => {
-    const usersJSON = fs.readFileSync(usersPath, 'utf8');
-    const users = JSON.parse(usersJSON);
-    return users;
-}
+const usersJSON = fs.readFileSync(usersPath, 'utf8');
+const users = JSON.parse(usersJSON);
 
 const allFoods = (req, res) => {
     let arr = [];

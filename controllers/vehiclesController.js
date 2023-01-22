@@ -1,11 +1,8 @@
 const fs = require('fs');
-const usersPath = '../db/users.json';
+const usersPath = './db/users.json';
 
-const users = () => {
-    const usersJSON = fs.readFileSync(usersPath, 'utf8');
-    const users = JSON.parse(usersJSON);
-    return users;
-}
+const usersJSON = fs.readFileSync(usersPath, 'utf8');
+const users = JSON.parse(usersJSON);
 
 const allVehicles = (req, res) => {
     let arr = [];
@@ -28,7 +25,6 @@ const allVehicles = (req, res) => {
     }
     res.status(200).json(arr);
 }
-
 
 module.exports = {
     allVehicles
