@@ -1,5 +1,6 @@
 const fs = require('fs');
-const usersPath = './db/users.json';
+const path = require('path');
+const usersPath = path.join(__dirname, '..', 'db', 'users.json');
 const { v4: uuidv4 } = require('uuid');
 
 const usersJSON = fs.readFileSync(usersPath, 'utf8');
